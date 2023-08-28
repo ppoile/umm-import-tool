@@ -3,6 +3,14 @@ import logging
 import openpyxl
 
 
+def setup_logging(verbose):
+    root_logger = logging.getLogger()
+    log_level = logging.INFO
+    if verbose:
+        log_level=logging.DEBUG
+    root_logger.setLevel(log_level)
+
+
 def get_klassenkuerzel(kategorie):
     if kategorie == 'WOM-10K':
         return 'WOM'
@@ -61,6 +69,7 @@ def write_csv(ws, filename):
             csv_writer.writerow([cell.value for cell in row])
 
 def main(args):
+    setup_logging(args.verbose)
     logging.debug("main(%s)" % args)
     wb = openpyxl.load_workbook(args.subscriptions)
     ws = wb.active
