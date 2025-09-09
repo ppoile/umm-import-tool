@@ -2,43 +2,8 @@ import csv
 import logging
 import openpyxl
 
+import common
 
-def setup_logging(verbose):
-    root_logger = logging.getLogger()
-    log_level = logging.INFO
-    if verbose:
-        log_level=logging.DEBUG
-    root_logger.setLevel(log_level)
-
-
-def get_klassenkuerzel(kategorie):
-    if kategorie == 'WOM-10K*':
-        return 'WOM'
-    return kategorie.replace('*', '')
-
-def get_bewerbskuerzel(kategorie):
-    kategorie_bewerbskuerzel_mapping = {
-        'MAN': 'MK',
-        'MAN*': '10-K',
-        'U12M': 'MK', 
-        'U12W': 'MK',
-        'U14M': 'MK',
-        'U14W': 'MK',
-        'U16M*': '6-K',
-        'U16W*': '5-K',
-        'U17M': 'MK',
-        'U17W': '5-K',
-        'U18M*': '10-K',
-        'U18W*': '7-K',
-        'U20M': 'MK',
-        'U20M*': '10-K',
-        'U20W': '5-K',
-        'U20W*': '7-K',
-        'WOM': '5-K',
-        'WOM*': '7-K',
-        'WOM-10K*': '10-K',
-    }
-    return kategorie_bewerbskuerzel_mapping[kategorie]
 
 def amend_klassenkuerzel_and_bewerbskuerzel(ws):
     logging.debug("amend klassenkuerzel and bewerbskuerzel")
@@ -60,8 +25,8 @@ def amend_klassenkuerzel_and_bewerbskuerzel(ws):
             name = ' '.join(name)
             logging.info('name: %s' % name)
             kategorie = cell.value.upper()
-            klassenkuerzel = get_klassenkuerzel(kategorie)
-            bewerbskuerzel = get_bewerbskuerzel(kategorie)
+            klassenkuerzel = common.get_klassenkuerzel(kategorie)
+            bewerbskuerzel = common.get_bewerbskuerzel(kategorie)
             logging.info('%s %s: %r => %r, %r' % (row_index, name, kategorie, klassenkuerzel, bewerbskuerzel))
             column_row_code = 'K{}'.format(cell.row)
             target_cell = ws[column_row_code]
@@ -70,6 +35,7 @@ def amend_klassenkuerzel_and_bewerbskuerzel(ws):
             target_cell = ws[column_row_code]
             target_cell.value = bewerbskuerzel
 
+
 def write_csv(ws, filename):
     logging.debug('writing csv')
     with open(filename, 'w', newline="", encoding='latin-1') as file_handle:
@@ -77,8 +43,9 @@ def write_csv(ws, filename):
         for row in ws.iter_rows():
             csv_writer.writerow([cell.value for cell in row])
 
+
 def main(args):
-    setup_logging(args.verbose)
+    common.setup_logging(args.verbose)
     logging.debug("main(%s)" % args)
     wb = openpyxl.load_workbook(args.subscriptions)
     ws = wb.active
