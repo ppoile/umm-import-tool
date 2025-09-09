@@ -12,7 +12,7 @@ def setup_logging(verbose):
 
 
 def get_klassenkuerzel(kategorie):
-    if kategorie == 'WOM-10K':
+    if kategorie == 'WOM-10K*':
         return 'WOM'
     return kategorie.replace('*', '')
 
@@ -27,7 +27,7 @@ def get_bewerbskuerzel(kategorie):
         'U16M*': '6-K',
         'U16W*': '5-K',
         'U17M': 'MK',
-        'U17W': 'MK',
+        'U17W': '5-K',
         'U18M*': '10-K',
         'U18W*': '7-K',
         'U20M': 'MK',
@@ -36,7 +36,7 @@ def get_bewerbskuerzel(kategorie):
         'U20W*': '7-K',
         'WOM': '5-K',
         'WOM*': '7-K',
-        'WOM-10K': '10-K',
+        'WOM-10K*': '10-K',
     }
     return kategorie_bewerbskuerzel_mapping[kategorie]
 
