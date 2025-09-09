@@ -50,10 +50,19 @@ def amend_klassenkuerzel_and_bewerbskuerzel(ws):
         if row_index == 0:
             assert cell.value == 'Kategorie'
         elif cell.value is not None:
-            kategorie = cell.value
+            name = []
+            column_row_code = 'D{}'.format(cell.row)
+            name_cell = ws[column_row_code]
+            name.append(name_cell.value)
+            column_row_code = 'C{}'.format(cell.row)
+            name_cell = ws[column_row_code]
+            name.append(name_cell.value)
+            name = ' '.join(name)
+            logging.info('name: %s' % name)
+            kategorie = cell.value.upper()
             klassenkuerzel = get_klassenkuerzel(kategorie)
             bewerbskuerzel = get_bewerbskuerzel(kategorie)
-            logging.info('%s: %r => %r, %r' % (row_index, kategorie, klassenkuerzel, bewerbskuerzel))
+            logging.info('%s %s: %r => %r, %r' % (row_index, name, kategorie, klassenkuerzel, bewerbskuerzel))
             column_row_code = 'K{}'.format(cell.row)
             target_cell = ws[column_row_code]
             target_cell.value = klassenkuerzel
